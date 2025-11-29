@@ -8,6 +8,18 @@
 *.so
 *.dylib
 
+# Binary files - all platforms
+*
+!*/
+!*.*
+!Makefile
+!LICENSE
+!README
+!Dockerfile
+!Jenkinsfile
+!go.mod
+!go.sum
+
 # Test binary, built with `go test -c`
 *.test
 
@@ -28,5 +40,29 @@ go.work.sum
 .env
 
 # Editor/IDE
-# .idea/
-# .vscode/
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Build output
+guitarworld-sync
+
+# Downloaded PDF files
+pdfs/
+*.pdf
+
+# Test directories
+test_pdfs/
+refactor_test/
+category_test/
+
+# macOS
+.DS_Store
+
+# Temporary files
+tmp/
+temp/
+
+.claude/
