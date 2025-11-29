@@ -8,18 +8,6 @@
 *.so
 *.dylib
 
-# Binary files - all platforms
-*
-!*/
-!*.*
-!Makefile
-!LICENSE
-!README
-!Dockerfile
-!Jenkinsfile
-!go.mod
-!go.sum
-
 # Test binary, built with `go test -c`
 *.test
 
@@ -47,7 +35,7 @@ go.work.sum
 *~
 
 # Build output
-guitarworld-sync
+/guitarworld-sync
 
 # Downloaded PDF files
 pdfs/
