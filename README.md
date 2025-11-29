@@ -133,6 +133,37 @@ go run main.go -concurrency 10
 - 仅在生成 PDF 时使用系统临时目录（自动清理）
 - 每个曲谱处理完成后立即释放临时文件
 
+## 使用 GitHub Actions 自动下载
+
+### 方式一: 使用 GitHub Actions（推荐，无需本地环境）
+
+1. Fork 本项目到你的 GitHub 账号
+2. 在你的仓库中，进入 **Actions** 页面
+3. 选择 **Download PDFs** 工作流
+4. 点击 **Run workflow**
+5. 填入参数:
+   - **cookies**: 你的 Guitar World Cookie（必填）
+   - **output_dir**: 输出目录名称（可选，默认 `pdfs`）
+   - **concurrency**: 并发数（可选，默认 `3`）
+6. 点击 **Run workflow** 开始下载
+7. 等待工作流完成后，在 **Artifacts** 中下载打包好的 PDF 文件
+
+**优点:**
+- ✅ 无需本地安装 Go 环境
+- ✅ 云端运行，不占用本地资源
+- ✅ 自动打包，直接下载
+- ✅ 保留 7 天，可随时下载
+
+### 方式二: 下载预编译版本
+
+在 [Releases](https://github.com/zhangzqs/guitarworld-auto-pdf-sync/releases) 页面下载对应平台的二进制文件:
+
+- **Linux**: `guitarworld-sync_Linux_x86_64.tar.gz`
+- **Windows**: `guitarworld-sync_Windows_x86_64.zip`
+- **macOS**: `guitarworld-sync_Darwin_x86_64.tar.gz` (Intel) 或 `guitarworld-sync_Darwin_arm64.tar.gz` (Apple Silicon)
+
+解压后直接运行，无需安装 Go 环境。
+
 ## 注意事项
 
 1. 🔑 **Cookie 有时效性**，如果下载失败可能需要重新获取 Cookie
@@ -140,6 +171,7 @@ go run main.go -concurrency 10
 3. ⏱️ 下载过程中会有适当延迟，避免对服务器造成过大压力
 4. ⚖️ 请确保你只下载自己已购买的曲谱，尊重版权
 5. 🌐 建议在网络稳定的环境下运行，避免下载中断
+6. 🔐 **使用 GitHub Actions 时请注意**: Cookie 信息会在工作流日志中可见，建议使用后立即删除工作流运行记录
 
 ## 工作原理
 

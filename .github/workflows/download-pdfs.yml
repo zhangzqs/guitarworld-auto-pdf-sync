@@ -1,0 +1,67 @@
+name: Download PDFs
+
+on:
+  workflow_dispatch:
+    inputs:
+      cookies:
+        description: 'Guitar World Cookies (必须包含 XSRF-TOKEN 和 guitarworld_ses)'
+        required: true
+        type: string
+      output_dir:
+        description: '输出目录名称'
+        required: false
+        default: 'pdfs'
+        type: string
+      concurrency:
+        description: '并发数'
+        required: false
+        default: '3'
+        type: string
+
+jobs:
+  download:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+
+      - name: Build
+        run: go build -o guitarworld-sync ./cmd/guitarworld-sync
+
+      - name: Download PDFs
+        env:
+          GUITARWORLD_COOKIES: ${{ inputs.cookies }}
+        run: |
+          ./guitarworld-sync -output ${{ inputs.output_dir }} -concurrency ${{ inputs.concurrency }}
+
+      - name: Upload PDFs as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: guitarworld-pdfs-${{ github.run_number }}
+          path: ${{ inputs.output_dir }}/
+          retention-days: 7
+          compression-level: 9
+
+      - name: Generate summary
+        run: |
+          echo "## 下载完成 ✅" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 统计信息" >> $GITHUB_STEP_SUMMARY
+          echo "- 总文件数: $(find ${{ inputs.output_dir }} -name "*.pdf" | wc -l)" >> $GITHUB_STEP_SUMMARY
+          echo "- 总大小: $(du -sh ${{ inputs.output_dir }} | cut -f1)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 文件列表" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          find ${{ inputs.output_dir }} -name "*.pdf" | head -20 >> $GITHUB_STEP_SUMMARY
+          total=$(find ${{ inputs.output_dir }} -name "*.pdf" | wc -l)
+          if [ $total -gt 20 ]; then
+            echo "... 和其他 $((total - 20)) 个文件" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📦 PDF 文件已上传为 Artifact，可在 Actions 页面下载" >> $GITHUB_STEP_SUMMARY
